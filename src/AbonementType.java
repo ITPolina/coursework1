@@ -16,6 +16,13 @@ public enum AbonementType {
         this.zones = zones;
     }
 
+    public boolean isZoneValid (Zone zone) {
+        for (Zone zone1 : zones) {
+            if (zone.equals(zone1)) return true;
+        }
+        return false;
+    }
+
     public LocalTime getTimeStart() {
         return timeStart;
     }

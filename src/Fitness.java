@@ -1,3 +1,4 @@
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Fitness {
@@ -13,19 +14,21 @@ public class Fitness {
         this.groupAbonements = new Abonement[capacity];
     }
 
-    /*public Abonement[] getGymAbonements() {
-        return gymAbonements;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("в H ч. и mm мин.");
+
+    public void addAbonement (Abonement abonement, Abonement[] abonements, Zone zone ) {
+        for (int i = 0; i < abonements.length; i ++) {
+            if (abonements[i] == null) {
+                abonements[i] = abonement;
+                System.out.println("Зарегистрирован " + (i+1) + "й абонемент в зону " + zone);
+                System.out.println("1."+ abonement.getHolder().getSurname() +" " + abonement.getHolder().getName() + " Посещаемая зона: " + zone);
+                String timeToStr = formatter.format(abonement.regTime);
+                System.out.println("2. Дата и время посещения: " + abonement.regDate + "  " + timeToStr);
+                return;
+            }
+        }
+        System.out.println("В выбранной зоне нет свободных мест ");
     }
-
-
-    public Abonement[] getPoolAbonements() {
-        return poolAbonements;
-    }
-
-    public Abonement[] getGroupAbonements() {
-        return groupAbonements;
-    }*/
-
 
     public void addFitness (Abonement abonement, Zone desiredZone) {
         if (abonement.getRegEndDate().isBefore(abonement.getRegDate())) {
@@ -36,20 +39,21 @@ public class Fitness {
             System.out.println("Время посещение фитнес клуба не соответствует Вашему абонементу");
             return;
         }
-        // должен быть отсортированный массив
-        Arrays.sort(abonement.getAbonementType().getZones()); // лучше бы это сделать в AbonementType, как???
-        if (Arrays.binarySearch(abonement.getAbonementType().getZones(),desiredZone ) < 0) {
+
+        //Arrays.sort(abonement.getAbonementType().getZones()); // сделано в AbonementType
+        //if (Arrays.binarySearch(abonement.getAbonementType().getZones(),desiredZone ) < 0) {
+        if (!abonement.getAbonementType().isZoneValid(desiredZone)) {
             System.out.println("Ваш абонемент не позволяет посетить выбранную зону " + desiredZone);
             return;
         }
         if (desiredZone == Zone.GYM) {
-            abonement.addAbonement(abonement, gymAbonements, desiredZone);
+            addAbonement(abonement, gymAbonements, desiredZone);
         }
         if (desiredZone == Zone.POOL) {
-            abonement.addAbonement(abonement, poolAbonements, desiredZone);
+            addAbonement(abonement, poolAbonements, desiredZone);
         }
         if (desiredZone == Zone.GROUP_TRAINING) {
-            abonement.addAbonement(abonement, groupAbonements, desiredZone);
+            addAbonement(abonement, groupAbonements, desiredZone);
         }
 
     }
